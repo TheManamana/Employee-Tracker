@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const conTable = require('console.table');
+require('console.table');
 require('dotenv').config();
 
 
@@ -45,13 +45,13 @@ mainMenu = () => {
         ]).then((data) => {
             switch (data.menu) {
                 case "View All Departments":
-                    
+                    showDepartments();
                     break;
                 case "View All Roles":
-
+                    showRoles();
                     break;
                 case "View All Employees":
-
+                    showEmployees();
                     break;
                 case "Add A Department":
 
@@ -71,6 +71,39 @@ mainMenu = () => {
 
             }
         })
+
+}
+
+showDepartments = () => {
+    db.query(`SELECT * FROM department`, (err, results) => {
+        console.table(results)
+        mainMenu()
+    })
+}
+
+showRoles = () => {
+    db.query(
+        `SELECT role.id AS ID, 
+        role.title AS Title, 
+        role.salary AS Salary, 
+        department.department_name AS Department FROM role JOIN department ON role.department_id = department.id ORDER BY role.id;`, function (err, results) {
+        console.table(results);
+        mainMenu()
+    });
+}
+
+showEmployees = () => {
+    db.query(
+        `SELECT employee.id AS ID, 
+        employee.first_name AS First_Name, 
+        employee.last_name AS Last_Name, 
+        role.title AS Title, 
+        role.salary AS Salary, 
+        employee.manager_id AS Manager, 
+        department.department_name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY ID;`, function (err, results) {
+        console.table(results);
+        mainMenu()
+    })
 
 }
 
