@@ -63,7 +63,7 @@ mainMenu = () => {
                     addNewEmployee();
                     break;
                 case "Update An Employee Role":
-
+                    updateEmployeeRole();
                     break;
 
 
@@ -92,7 +92,7 @@ addNewDepartment = () => {
         })
 }
 
-addNewRole = async () => {
+addNewRole = () => {
 
     var departments = [];
 
@@ -129,7 +129,7 @@ addNewRole = async () => {
 
             var depId;
             for (let i = 0; i < departments.length; i++) {
-                if(departments[i]===data.roleDepartmentId){
+                if (departments[i] === data.roleDepartmentId) {
                     depId = i + 1;
                 }
             }
@@ -142,7 +142,7 @@ addNewRole = async () => {
         })
 }
 
-addNewEmployee = async () => {
+addNewEmployee = () => {
 
     var roles = [];
     var employees = [];
@@ -196,12 +196,12 @@ addNewEmployee = async () => {
             var managerId;
             var roleId;
             for (let i = 0; i < employees.length; i++) {
-                if(employees[i]===data.manager){
+                if (employees[i] === data.manager) {
                     managerId = i + 1;
                 }
             }
             for (let i = 0; i < roles.length; i++) {
-                if(roles[i]===data.title){
+                if (roles[i] === data.title) {
                     roleId = i + 1;
                 }
             }
@@ -212,6 +212,80 @@ addNewEmployee = async () => {
             })
             mainMenu();
         })
+}
+
+updateEmployeeRole = () => {
+
+    var roles2 = [];
+    var employs = [];
+    
+
+    db.query(`SELECT * FROM role`, (err, results) => {
+
+
+        results.forEach(role => {
+            roles2.push(role.title);
+
+        });
+    });
+
+    db.query(`SELECT * FROM employee`, (err, results) => {
+        
+
+        results.forEach(employee => {
+            employs.push(`${employee.first_name} ${employee.last_name}`);
+            
+        });
+    });
+    console.log(employs);
+
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                message: 'Are you sure?',
+                name: 'confirm',
+                choices: ["yes","no"],
+
+            },
+            {
+                type: 'list',
+                message: 'Which employee would you like to update?',
+                name: 'changeEmployee',
+                choices: employs,
+
+            },
+            {
+                type: 'list',
+                message: 'What would you like their new role to be?',
+                name: 'changeTitle',
+                choices: roles2,
+
+            }
+        ]).then((data) => {
+            if(data.confirm === "no"){
+                mainMenu();
+            }
+            var employeeId;
+            var roleId;
+            for (let i = 0; i < employs.length; i++) {
+                if (employs[i] === data.changeEmployee) {
+                    employeeId = i + 1;
+                }
+            }
+            for (let i = 0; i < roles2.length; i++) {
+                if (roles2[i] === data.changeTitle) {
+                    roleId = i + 1;
+                }
+            }
+
+            db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [roleId, employeeId], (err, results) => {
+                console.log("Succesfully updated employee");
+
+            })
+            mainMenu();
+        })
+
 }
 
 
