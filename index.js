@@ -4,6 +4,7 @@ require('console.table');
 require('dotenv').config();
 
 
+// Database connection
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -14,6 +15,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database.`)
 )
 
+// Initial inquirer menu prompt
 init = () => {
     inquirer
         .prompt([
@@ -33,6 +35,7 @@ init = () => {
         })
 }
 
+//  Main Menu
 mainMenu = () => {
     inquirer
         .prompt([
@@ -74,6 +77,7 @@ mainMenu = () => {
 
 }
 
+//  New Department prompt
 addNewDepartment = () => {
     inquirer
         .prompt([
@@ -92,6 +96,7 @@ addNewDepartment = () => {
         })
 }
 
+//  New role prompt
 addNewRole = () => {
 
     var departments = [];
@@ -142,6 +147,7 @@ addNewRole = () => {
         })
 }
 
+//  New Employee prompt
 addNewEmployee = () => {
 
     var roles = [];
@@ -214,6 +220,7 @@ addNewEmployee = () => {
         })
 }
 
+//  Update employee prompt
 updateEmployeeRole = () => {
 
     var roles2 = [];
